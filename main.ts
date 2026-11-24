@@ -17,7 +17,8 @@ const EMOJI = "\u{1F5FB}";
 
 // Self-check enforcing the gate: /output/entry.txt must be UTF-8 text of
 // 1 to 8 characters, not only white space; the competition asks for
-// exactly one emoji.
+// exactly one emoji. The count is Unicode code points (spread iteration),
+// not UTF-16 code units, so an astral-plane emoji counts as one.
 const chars = [...EMOJI]; // code-point iteration
 if (chars.length !== 1) {
   throw new Error(`entry must be exactly one emoji, got ${chars.length} characters`);
@@ -30,4 +31,6 @@ if (EMOJI.trim().length === 0) {
 }
 
 mkdirSync("/output", { recursive: true });
+// No trailing newline: the file is exactly the emoji's 4 bytes, so the
+// entry's Size on the leaderboard is 4 and the text is byte-exact.
 writeFileSync("/output/entry.txt", EMOJI, "utf8");
